@@ -22,7 +22,7 @@ public abstract  class Issue implements
     protected User assignee;       // can be null
     protected User reporter;  // who created the issue
     protected List<Component> components = new ArrayList<>();
-
+    protected User assignedBy;
 
 
     protected Priority priority = Priority.MEDIUM;
@@ -42,6 +42,7 @@ public abstract  class Issue implements
         this.assignee = assignee;
         if (priority != null) this.priority = priority;
         this.reporter = reporter;
+        this.assignedBy = null;
     }
 
 
@@ -91,5 +92,13 @@ public abstract  class Issue implements
     public void setReporter(User reporter) { this.reporter = reporter; }
 
     public List<Component> getComponents() { return components; }
+    public User getAssignedBy() {
+        return this.assignedBy;
+    }
+
+    /** Record the user (e.g., Scrum Master) who assigned this issue */
+    public void setAssignedBy(User assigner) {
+        this.assignedBy = assigner;
+    }
 
 }

@@ -2,6 +2,7 @@ package gui;
 
 import entities.issues.Issue;
 import entities.users.TechnicalStaff;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -44,6 +45,13 @@ public class AssignedIssueScreen {
         TableColumn<Issue, String> statusCol = new TableColumn<>("Status");
         statusCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getStatus()));
         table.getColumns().addAll(idCol, titleCol, statusCol);
+        TableColumn<Issue, String> assignedByCol = new TableColumn<>("Assigned By");
+        assignedByCol.setCellValueFactory(data -> {
+                    entities.users.User assigner = data.getValue().getAssignedBy();
+                    String name = (assigner == null) ? "" : assigner.getName();
+                    return new SimpleStringProperty(name);
+                });
+        table.getColumns().addAll(idCol, titleCol, statusCol, assignedByCol);
 
         ObservableList<Issue> issues =
                 FXCollections.observableArrayList(searchService.byAssigneeId(currentUser.getId()));

@@ -40,7 +40,7 @@ public class UserManager {
     }
 
 
-    public boolean addUser(User user) {
+    public static boolean addUser(User user) {
         if (user == null) return false;
         if (findById(user.getId()) != null) return false;
         // You can delegate to save() or duplicate its logic here.

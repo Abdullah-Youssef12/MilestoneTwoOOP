@@ -2,7 +2,6 @@ package gui;
 
 import entities.issues.Issue;
 import entities.users.ScrumMaster;
-import entities.users.TechnicalStaff;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -13,37 +12,20 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import services.BacklogService;
 import services.TaskService;
-
-import java.util.List;
+import managers.IssueManager;
 
 public class BacklogScreen {
 
     private final BorderPane root;
     private final Stage stage;
     private final ScrumMaster sm;
-    private  BacklogService backlogService;
     private final TaskService taskService;
 
     public BacklogScreen(Stage stage, ScrumMaster sm) {
         this.stage = stage;
         this.sm = sm;
-        this.backlogService = new BacklogService();
         this.taskService = new TaskService();
         this.root = buildUI();
-    }
-
-
-
-    public TaskService getTaskService() {
-        return taskService;
-    }
-
-    public ScrumMaster getSm() {
-        return sm;
-    }
-
-    public Stage getStage() {
-        return stage;
     }
 
     private BorderPane buildUI() {
@@ -60,11 +42,10 @@ public class BacklogScreen {
         statusCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getStatus()));
         table.getColumns().addAll(idCol, titleCol, statusCol);
 
-        List<Issue> backlog = (List<Issue>) backlogService.getBacklogService();
-        ObservableList<Issue> data = FXCollections.observableArrayList(backlog);
+        // use IssueManager so any newly created issues are visible
+        ObservableList<Issue> data = FXCollections.observableArrayList(IssueManager.findAll());
         table.setItems(data);
 
-        // Assign selected issue to developer
         Button assignBtn = new Button("Assign to Developer");
         TextField devIdField = new TextField();
         devIdField.setPromptText("Developer ID");
@@ -72,8 +53,8 @@ public class BacklogScreen {
             Issue selected = table.getSelectionModel().getSelectedItem();
             if (selected != null && !devIdField.getText().isBlank()) {
                 String devId = devIdField.getText().trim();
-                // assign via TaskService
-                taskService.assignTask(selected.getId(), devId);
+                // record the Scrum Master as the assigner
+                taskService.assignTask(selected.getId(), devId, sm.getId());
                 data.remove(selected);
                 showAlert(Alert.AlertType.INFORMATION, "Assigned", "Issue assigned to developer");
             }

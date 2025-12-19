@@ -50,6 +50,10 @@ public class ScrumServer {
         }
 
         public void run() {
+            System.out.println(
+                    "Handling client on thread: " + Thread.currentThread().getName()
+            );
+
             try (BufferedReader in = new BufferedReader(
                     new InputStreamReader(socket.getInputStream()))) {
                 out = new PrintWriter(socket.getOutputStream(), true);
