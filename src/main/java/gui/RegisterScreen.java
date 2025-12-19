@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import services.AccessService;
+import javafx.scene.control.ComboBox;
 
 /**
  * Screen for registering new users.

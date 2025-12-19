@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Sprint {
-    private final String id;
-    private final String name;
+    private String id;
+    private String name;
     private final LocalDate startDate;
     private final LocalDate endDate;
     private final String objective;

@@ -1,16 +1,13 @@
+// src/main/java/module-info.java
 module org.example.milestonetwooop {
     requires javafx.controls;
     requires javafx.fxml;
-    requires javafx.web;
 
-    requires org.controlsfx.controls;
-    requires com.dlsc.formsfx;
-    requires net.synedra.validatorfx;
-    requires org.kordamp.ikonli.javafx;
-    requires org.kordamp.bootstrapfx.core;
-    requires eu.hansolo.tilesfx;
-    requires com.almasb.fxgl.all;
-
+    // existing opens/exports …
     opens org.example.milestonetwooop to javafx.fxml;
     exports org.example.milestonetwooop;
+
+    // allow javafx to access your GUI classes
+    opens gui to javafx.fxml, javafx.graphics;
+    exports gui;
 }
