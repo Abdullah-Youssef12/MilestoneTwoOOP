@@ -35,17 +35,6 @@ public class IssueSearchService {
         return result;
     }
 
-    public List<Issue> byReporterId(String reporterId) {
-        List<Issue> result = new ArrayList<>();
-        if (isBlank(reporterId)) return result;
-
-        for (Issue i : IssueManager.findAll()) {
-            if (i.getReporter() != null && reporterId.trim().equals(i.getReporter().getId())) {
-                result.add(i);
-            }
-        }
-        return result;
-    }
 
     public List<Issue> byLabel(String label) {
         List<Issue> result = new ArrayList<>();
@@ -204,11 +193,16 @@ public class IssueSearchService {
     // the only "type match" method (no duplicates)
     private boolean matchesTypeStrict(Issue i, IssueType type) {
         switch (type) {
-            case BUG:   return i instanceof Bug;
-            case TASK:  return i instanceof Task;
-            case STORY: return i instanceof Story;
-            case EPIC:  return i instanceof Epic;
-            default:    return false;
+            case BUG:
+                return i instanceof Bug;
+            case TASK:
+                return i instanceof Task;
+            case STORY:
+                return i instanceof Story;
+            case EPIC:
+                return i instanceof Epic;
+            default:
+                return false;
         }
     }
 
@@ -220,4 +214,17 @@ public class IssueSearchService {
     private boolean isBlank(String s) {
         return s == null || s.trim().isEmpty();
     }
+
+    public List<Issue> byReporterId(String reporterId) {
+        List<Issue> result = new ArrayList<>();
+        if (isBlank(reporterId)) return result;
+
+        for (Issue i : IssueManager.findAll()) {
+            if (i.getReporter() != null && reporterId.trim().equals(i.getReporter().getId())) {
+                result.add(i);
+            }
+        }
+        return result;
+    }
 }
+

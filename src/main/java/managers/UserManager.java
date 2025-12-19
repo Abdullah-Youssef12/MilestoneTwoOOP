@@ -4,10 +4,13 @@ import DAO.UserDAO;
 import database.Database;
 import entities.users.User;
 
+import javax.management.ObjectInstance;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserManager {
+
+    private static final UserManager INSTANCE = new UserManager();
 
     public static void save(User user) {
         if (user == null) return;
@@ -35,5 +38,15 @@ public class UserManager {
     public static List<User> findAll() {
         return new ArrayList<>(Database.users);
     }
+
+
+    public boolean addUser(User user) {
+        if (user == null) return false;
+        if (findById(user.getId()) != null) return false;
+        // You can delegate to save() or duplicate its logic here.
+        Database.users.add(user);
+        return true;
+    }
+
 }
 

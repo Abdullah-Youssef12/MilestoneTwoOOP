@@ -66,5 +66,14 @@ public class BacklogService {
         }
         return false;
     }
+
+    public Object BacklogService ;
+
+    public Object getBacklogService() {
+        if (BacklogService == null) {
+            BacklogService = new BacklogService();
+        }
+        return BacklogService;
+    }
 }
 

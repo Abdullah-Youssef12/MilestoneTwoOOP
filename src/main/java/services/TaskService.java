@@ -3,27 +3,26 @@ package services;
 import DAO.StoryDAO;
 import DAO.TaskDAO;
 import entities.users.Developer;
-import entities.users.User;
 import entities.issues.Task;
 import entities.issues.Story;
+import entities.users.User;
+import managers.UserManager;
 
 public class TaskService {
 
     // Assign a task to a developer
-    public boolean assignTask(Task task, User user) {
-
-        // Only developers can receive tasks
-        if (!(user instanceof Developer)) {
+    // in TaskService
+    public boolean assignTask(String taskId, String developerId) {
+        Task task = TaskDAO.findById(taskId);
+        User user = UserManager.findById(developerId);
+        if (!(user instanceof Developer) || task == null) {
             return false;
         }
-
-        // Assign the task
         task.setAssignee(user);
-
-        // Save/update task in storage
         TaskDAO.save(task);
         return true;
     }
+
 
     // Change task status
     public boolean changeStatus(Task task, String newStatus) {

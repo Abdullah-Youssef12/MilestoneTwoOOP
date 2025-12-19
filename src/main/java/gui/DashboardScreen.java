@@ -15,8 +15,8 @@ import javafx.stage.Stage;
 public class DashboardScreen {
 
     private final VBox root;
-    private final Stage stage;
-    private final User currentUser;
+    private  Stage stage;
+    private  User currentUser;
 
     public DashboardScreen(Stage stage, User user) {
         this.stage = stage;
@@ -71,7 +71,13 @@ public class DashboardScreen {
         return box;
     }
 
+
+
     public VBox getRoot() {
         return root;
     }
+
+
+
+
 }

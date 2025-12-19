@@ -2,6 +2,7 @@
 module org.example.milestonetwooop {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.management;
 
     // existing opens/exports …
     opens org.example.milestonetwooop to javafx.fxml;

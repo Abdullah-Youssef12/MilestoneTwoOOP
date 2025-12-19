@@ -1,6 +1,7 @@
 package gui;
 
 import entities.sprint.Sprint;
+import entities.users.User;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 
@@ -22,14 +23,17 @@ import java.time.LocalDate;
  */
 public class SprintManagmentScreen {
 
-    private final GridPane root;
-    private final Stage stage;
-    private final SprintService sprintService;
+    private  GridPane root;
+    private Stage stage;
+    private SprintService sprintService;
 
     public SprintManagmentScreen(Stage stage) {
         this.stage = stage;
         this.sprintService = new SprintService();
         this.root = buildUI();
+    }
+
+    public SprintManagmentScreen(Stage stage, User currentUser) {
     }
 
     private GridPane buildUI() {
