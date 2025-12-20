@@ -11,12 +11,15 @@ import javafx.stage.Stage;
 /**
  * Dashboard screen.
  * Shows different options based on the user's role.
+ * Now includes separate buttons for epics/bugs for stakeholders,
+ * requests and sprint management for scrum masters,
+ * tasks for developers, and reviews for QA.
  */
 public class DashboardScreen {
 
     private final VBox root;
-    private  Stage stage;
-    private  User currentUser;
+    private final Stage stage;
+    private final User currentUser;
 
     public DashboardScreen(Stage stage, User user) {
         this.stage = stage;
@@ -31,36 +34,57 @@ public class DashboardScreen {
         Label welcome = new Label("Welcome, " + currentUser.getName());
         box.getChildren().add(welcome);
 
-        // Stakeholder: create new work items
+        // Stakeholder: request epic or bug
         if (currentUser instanceof Stakeholder) {
-            Button createIssueBtn = new Button("Create Issue");
-            createIssueBtn.setOnAction(e -> {
-                IssueCreationScreen creation = new IssueCreationScreen(stage, currentUser);
-                stage.setScene(new Scene(creation.getRoot(), 500, 500));
+            Button requestEpicBtn = new Button("Request Epic");
+            requestEpicBtn.setOnAction(e -> {
+                EpicRequestScreen epicScreen = new EpicRequestScreen(stage, (Stakeholder) currentUser);
+                stage.setScene(new Scene(epicScreen.getRoot(), 600, 400));
             });
-            box.getChildren().add(createIssueBtn);
+            Button requestBugBtn = new Button("Request Bug");
+            requestBugBtn.setOnAction(e -> {
+                BugRequestScreen bugScreen = new BugRequestScreen(stage, (Stakeholder) currentUser);
+                stage.setScene(new Scene(bugScreen.getRoot(), 600, 400));
+            });
+            box.getChildren().addAll(requestEpicBtn, requestBugBtn);
         }
 
-        // Technical staff: view assigned issues
-        if (currentUser instanceof TechnicalStaff) {
-            Button viewAssignedBtn = new Button("View Assigned Issues");
-            viewAssignedBtn.setOnAction(e -> {
-                AssignedIssueScreen assigned = new AssignedIssueScreen(stage, (TechnicalStaff) currentUser);
-                stage.setScene(new Scene(assigned.getRoot(), 600, 400));
+        // Developer: view assigned tasks
+        if (currentUser instanceof Developer) {
+            Button myTasksBtn = new Button("My Tasks");
+            myTasksBtn.setOnAction(e -> {
+                DeveloperIssueScreen devScreen = new DeveloperIssueScreen(stage, (Developer) currentUser);
+                stage.setScene(new Scene(devScreen.getRoot(), 600, 400));
             });
-            box.getChildren().add(viewAssignedBtn);
+            box.getChildren().add(myTasksBtn);
         }
 
-        // Scrum master: manage sprints
+        // QA Engineer: review assigned issues
+        if (currentUser instanceof QAEngineer) {
+            Button reviewBtn = new Button("Review Issues");
+            reviewBtn.setOnAction(e -> {
+                QAReviewScreen qaScreen = new QAReviewScreen(stage, (QAEngineer) currentUser);
+                stage.setScene(new Scene(qaScreen.getRoot(), 600, 400));
+            });
+            box.getChildren().add(reviewBtn);
+        }
+
+        // Scrum Master: view requests and manage sprints
         if (currentUser instanceof ScrumMaster) {
+            Button requestsBtn = new Button("Requests");
+            requestsBtn.setOnAction(e -> {
+                ScrumMasterRequestScreen reqScreen = new ScrumMasterRequestScreen(stage, (ScrumMaster) currentUser);
+                stage.setScene(new Scene(reqScreen.getRoot(), 600, 400));
+            });
             Button manageSprintsBtn = new Button("Manage Sprints");
             manageSprintsBtn.setOnAction(e -> {
                 SprintManagmentScreen sprintMgmt = new SprintManagmentScreen(stage);
                 stage.setScene(new Scene(sprintMgmt.getRoot(), 600, 400));
             });
-            box.getChildren().add(manageSprintsBtn);
+            box.getChildren().addAll(requestsBtn, manageSprintsBtn);
         }
 
+        // Logout button for everyone
         Button logout = new Button("Logout");
         logout.setOnAction(e -> {
             LoginScreen login = new LoginScreen(stage);
@@ -71,13 +95,7 @@ public class DashboardScreen {
         return box;
     }
 
-
-
     public VBox getRoot() {
         return root;
     }
-
-
-
-
 }

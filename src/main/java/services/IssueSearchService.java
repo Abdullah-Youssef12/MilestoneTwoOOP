@@ -1,7 +1,9 @@
 package services;
 
+import database.Database;
 import entities.issues.*;
 import entities.project.Component;
+import entities.sprint.Sprint;
 import managers.IssueManager;
 
 import java.util.ArrayList;
@@ -35,6 +37,17 @@ public class IssueSearchService {
         return result;
     }
 
+    public List<Issue> byReporterId(String reporterId) {
+        List<Issue> result = new ArrayList<>();
+        if (isBlank(reporterId)) return result;
+
+        for (Issue i : IssueManager.findAll()) {
+            if (i.getReporter() != null && reporterId.trim().equals(i.getReporter().getId())) {
+                result.add(i);
+            }
+        }
+        return result;
+    }
 
     public List<Issue> byLabel(String label) {
         List<Issue> result = new ArrayList<>();
@@ -85,6 +98,8 @@ public class IssueSearchService {
         String target = componentName.trim();
 
         for (Issue i : IssueManager.findAll()) {
+            if (i.getComponents() == null) continue;
+
             for (Component c : i.getComponents()) {
                 if (c != null && c.getName() != null && c.getName().equalsIgnoreCase(target)) {
                     result.add(i);
@@ -137,6 +152,46 @@ public class IssueSearchService {
         return result;
     }
 
+    // -------- Extras you attempted to add --------
+
+    public List<Bug> getUnassignedBugs() {
+        List<Bug> result = new ArrayList<>();
+
+        for (Issue i : IssueManager.findAll()) {
+            if (i instanceof Bug && i.getAssignee() == null) {
+                result.add((Bug) i);
+            }
+        }
+        return result;
+    }
+
+    public List<Epic> getUnassignedEpics() {
+        List<Epic> result = new ArrayList<>();
+
+        for (Issue i : IssueManager.findAll()) {
+            if (!(i instanceof Epic)) continue;
+
+            boolean inSprint = false;
+
+            // check every sprint to see if this epic is already included
+            for (Sprint s : Database.sprints) {
+                for (Issue sprIssue : s.getItems()) {
+                    if (sprIssue.getId().equals(i.getId())) {
+                        inSprint = true;
+                        break;
+                    }
+                }
+                if (inSprint) break;
+            }
+
+            if (!inSprint) {
+                result.add((Epic) i);
+            }
+        }
+
+        return result;
+    }
+
     // -------- Helpers --------
 
     private boolean matchesStatus(Issue i, String status) {
@@ -164,7 +219,6 @@ public class IssueSearchService {
         return i.getPriority() == p;
     }
 
-    // criteria check (null means ignore)
     private boolean matchesTypeCriteria(Issue i, IssueType type) {
         if (type == null) return true;
         return matchesTypeStrict(i, type);
@@ -180,6 +234,8 @@ public class IssueSearchService {
 
     private boolean matchesComponent(Issue i, String componentName) {
         if (isBlank(componentName)) return true;
+        if (i.getComponents() == null) return false;
+
         String target = componentName.trim();
 
         for (Component c : i.getComponents()) {
@@ -190,7 +246,6 @@ public class IssueSearchService {
         return false;
     }
 
-    // the only "type match" method (no duplicates)
     private boolean matchesTypeStrict(Issue i, IssueType type) {
         switch (type) {
             case BUG:
@@ -214,17 +269,4 @@ public class IssueSearchService {
     private boolean isBlank(String s) {
         return s == null || s.trim().isEmpty();
     }
-
-    public List<Issue> byReporterId(String reporterId) {
-        List<Issue> result = new ArrayList<>();
-        if (isBlank(reporterId)) return result;
-
-        for (Issue i : IssueManager.findAll()) {
-            if (i.getReporter() != null && reporterId.trim().equals(i.getReporter().getId())) {
-                result.add(i);
-            }
-        }
-        return result;
-    }
 }
-

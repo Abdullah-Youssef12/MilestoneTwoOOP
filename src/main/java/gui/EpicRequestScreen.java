@@ -8,7 +8,6 @@ import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import services.IssueCreationService;
@@ -47,14 +46,27 @@ public class EpicRequestScreen {
             String title = titleField.getText().trim();
             String desc = descArea.getText().trim();
             if (!title.isBlank() && !desc.isBlank()) {
-                Issue epic = creationService.createIssue(IssueType.EPIC, null, title, title, desc,
-                        null, Priority.MEDIUM, null,
-                        stakeholder, null, null, null, null, null);
+                Issue epic = creationService.createIssue(
+                        IssueType.EPIC,
+                        null,
+                        title,
+                        title,
+                        desc,
+                        null,
+                        Priority.MEDIUM,
+                        null,
+                        stakeholder,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                );
                 showAlert(Alert.AlertType.INFORMATION,
                         "Success", "Epic created: ID " + epic.getId());
                 titleField.clear();
                 descArea.clear();
-                refreshTable();
+
             } else {
                 showAlert(Alert.AlertType.ERROR,
                         "Input error", "Title and description cannot be empty");
@@ -79,10 +91,7 @@ public class EpicRequestScreen {
         return vbox;
     }
 
-    private void refreshTable() {
-        // no-op, kept for clarity
-    }
-
+    /** Refreshes the table with the stakeholder’s epics */
     private void refreshTable(TableView<Issue> table) {
         List<Issue> epics = searchService.byReporterId(stakeholder.getId());
         table.setItems(FXCollections.observableArrayList(epics));
